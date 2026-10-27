@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expedientes Mamá Irma by DD</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#060913',
+              card: '#0d1322',
+              cardLight: '#141d33',
+              border: '#1e2d4a',
+              cyan: '#00f0ff',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#f43f5e',
+              text: '#e2e8f0',
+              muted: '#64748b'
+            }
+          },
+          fontFamily: {
+            mono: ['Fira Code', 'Courier New', 'monospace'],
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      background-color: #060913;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Estilos personalizados de scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #060913;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e2d4a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00f0ff;
+    }
+
+    /* Brillo cibernético e institucional */
+    .glow-cyan {
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+    }
+    .glow-cyan-hover:hover {
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    }
+    
+    /* Modo de Impresión Limpio e Institucional */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .card-print {
+        border: 1px solid #ccc !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-12 antialiased selection:bg-cyber-cyan selection:text-black">
+
+  <!-- ENCABEZADO CON LOGO GEOMÉTRICO INSTITUCIONAL -->
+  <header class="no-print border-b border-cyber-border bg-cyber-card/80 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <!-- Logo y Título -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-cyber-cardLight border border-cyber-cyan/40 flex items-center justify-center glow-cyan">
+          <svg class="w-6 h-6 text-cyber-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            <circle cx="12" cy="12" r="2" fill="currentColor" class="text-cyber-cyan"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-bold tracking-tight text-white font-mono">Expedientes Mamá Irma</h1>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan">by DD</span>
+          </div>
+          <p class="text-xs text-cyber-muted">Sistema Institucional de Control Médico & Exámenes</p>
+        </div>
+      </div>
+
+      <!-- Acciones de Cabecera -->
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <button onclick="openRecordModal()" class="flex-1 sm:flex-none px-3.5 py-2 bg-cyber-cyan text-black hover:bg-cyan-300 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Nueva Consulta / Examen
+        </button>
+        <button onclick="exportDataJSON()" title="Exportar Copia de Seguridad" class="px-3 py-2 bg-cyber-cardLight border border-cyber-border hover:border-cyber-cyan text-cyber-text text-xs rounded-lg transition flex items-center gap-1.5 font-mono">
+          <svg class="w-4 h-4 text-cyber-cyan" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Exportar
+        </button>
+        <label title="Importar Copia de Seguridad" class="px-3 py-2 bg-cyber-cardLight border border-cyber-border hover:border-cyber-cyan text-cyber-text text-xs rounded-lg transition flex items-center gap-1.5 cursor-pointer font-mono">
+          <svg class="w-4 h-4 text-cyber-emerald" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          Importar
+          <input type="file" id="importFileInput" accept=".json" class="hidden" onchange="importDataJSON(event)">
+        </label>
+        <button onclick="window.print()" title="Imprimir Informe" class="px-3 py-2 bg-cyber-cardLight border border-cyber-border hover:border-cyber-cyan text-cyber-text text-xs rounded-lg transition flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-cyber-amber" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+
+    <!-- FICHA VITAL DEL PACIENTE (TOTALMENTE EDITABLE) -->
+    <section class="bg-cyber-card border border-cyber-border rounded-xl p-5 relative overflow-hidden glow-cyan">
+      <div class="absolute -right-8 -top-8 w-32 h-32 bg-cyber-cyan/5 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-cyber-border/60">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-cyber-cardLight border border-cyber-cyan/50 flex items-center justify-center text-cyber-cyan font-bold font-mono text-lg">
+            MI
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="vitalName" class="text-xl font-bold text-white tracking-wide">Poderoso Expediente Paciente</h2>
+              <span id="vitalStatus" class="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-cyber-emerald/10 border border-cyber-emerald/40 text-cyber-emerald">Sin Configurar</span>
+            </div>
+            <p id="vitalDocInsurance" class="text-xs text-cyber-muted font-mono mt-0.5">DUI/ID: --- | Seguro: ---</p>
+          </div>
+        </div>
+
+        <button onclick="openVitalModal()" class="no-print self-start lg:self-center px-3 py-1.5 bg-cyber-cardLight hover:bg-cyber-border border border-cyber-cyan/40 text-cyber-cyan text-xs rounded-lg transition font-mono flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          Editar Ficha Vital
+        </button>
+      </div>
+
+      <!-- Grid de Datos Vitales -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-xs">
+        <div class="bg-cyber-cardLight/50 p-2.5 rounded-lg border border-cyber-border/40">
+          <span class="text-[10px] uppercase font-mono text-cyber-muted block">Grupo Sanguíneo</span>
+          <span id="vitalBlood" class="font-bold text-cyber-rose font-mono text-sm">--</span>
+        </div>
+        <div class="bg-cyber-cardLight/50 p-2.5 rounded-lg border border-cyber-border/40">
+          <span class="text-[10px] uppercase font-mono text-cyber-muted block">Alergias Conocidas</span>
+          <span id="vitalAllergies" class="font-semibold text-cyber-amber truncate block">--</span>
+        </div>
+        <div class="bg-cyber-cardLight/50 p-2.5 rounded-lg border border-cyber-border/40">
+          <span class="text-[10px] uppercase font-mono text-cyber-muted block">Condiciones Crónicas</span>
+          <span id="vitalConditions" class="font-semibold text-cyber-cyan truncate block">--</span>
+        </div>
+        <div class="bg-cyber-cardLight/50 p-2.5 rounded-lg border border-cyber-border/40">
+          <span class="text-[10px] uppercase font-mono text-cyber-muted block">Contacto & Doctor</span>
+          <span id="vitalContactDoctor" class="font-semibold text-white truncate block">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDARIO INTERACTIVO Y PRÓXIMAS CITAS -->
+    <section class="no-print grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Componente Calendario Mensual -->
+      <div class="lg:col-span-2 bg-cyber-card border border-cyber-border rounded-xl p-4">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-cyber-cyan" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <h3 id="calendarMonthLabel" class="font-bold text-sm text-white font-mono uppercase tracking-wider">Cargando Mes...</h3>
+          </div>
+          <div class="flex items-center gap-1 font-mono text-xs">
+            <button onclick="changeMonth(-1)" class="p-1.5 rounded hover:bg-cyber-cardLight border border-cyber-border text-cyber-muted hover:text-white transition">&lt;</button>
+            <button onclick="resetMonth()" class="px-2 py-1 rounded hover:bg-cyber-cardLight border border-cyber-border text-cyber-cyan transition">Hoy</button>
+            <button onclick="changeMonth(1)" class="p-1.5 rounded hover:bg-cyber-cardLight border border-cyber-border text-cyber-muted hover:text-white transition">&gt;</button>
+          </div>
+        </div>
+
+        <!-- Días de la Semana -->
+        <div class="grid grid-cols-7 text-center font-mono text-[11px] text-cyber-muted mb-2 font-semibold">
+          <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+        </div>
+
+        <!-- Malla de Días del Calendario -->
+        <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 text-xs font-mono">
+          <!-- Generado Dinámicamente por JS -->
+        </div>
+
+        <!-- Leyenda -->
+        <div class="flex items-center gap-4 mt-3 pt-3 border-t border-cyber-border/50 text-[11px] font-mono text-cyber-muted">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-cyber-cyan inline-block"></span>
+            <span>Consulta/Examen Realizado</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-cyber-amber inline-block animate-pulse"></span>
+            <span>Próxima Cita Programada</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de Próximas Citas -->
+      <div class="bg-cyber-card border border-cyber-border rounded-xl p-4 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-cyber-border/60">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-cyber-amber" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <h3 class="font-bold text-xs text-white font-mono uppercase tracking-wider">Próximas Citas</h3>
+            </div>
+            <span id="upcomingCount" class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-amber/10 border border-cyber-amber/30 text-cyber-amber">0 Pendientes</span>
+          </div>
+
+          <div id="upcomingAppointmentsList" class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+            <!-- Cargado dinámicamente -->
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-cyber-border/50 text-center">
+          <p class="text-[11px] text-cyber-muted">Usa el calendario para filtrar eventos por fecha específica.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- BARRA DE FILTROS Y BÚSQUEDA -->
+    <section class="no-print bg-cyber-card border border-cyber-border rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="relative w-full md:w-80">
+        <svg class="w-4 h-4 absolute left-3 top-3 text-cyber-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Buscar diagnóstico, doctor, lugar..." class="w-full pl-9 pr-3 py-2 bg-cyber-cardLight border border-cyber-border rounded-lg text-xs text-white placeholder-cyber-muted focus:outline-none focus:border-cyber-cyan font-mono transition">
+      </div>
+
+      <div class="flex items-center gap-2 w-full md:w-auto">
+        <select id="specialtyFilter" onchange="applyFilters()" class="flex-1 md:flex-none bg-cyber-cardLight border border-cyber-border rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-cyber-cyan">
+          <option value="">Todas las Especialidades</option>
+        </select>
+
+        <select id="locationFilter" onchange="applyFilters()" class="flex-1 md:flex-none bg-cyber-cardLight border border-cyber-border rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-cyber-cyan">
+          <option value="">Todos los Lugares</option>
+        </select>
+
+        <button onclick="clearFilters()" class="px-3 py-2 bg-cyber-cardLight border border-cyber-border text-cyber-muted hover:text-white text-xs rounded-lg transition font-mono">
+          Limpiar
+        </button>
+      </div>
+    </section>
+
+    <!-- LISTA DE EXPEDIENTES Y CONSULTAS -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between px-1">
+        <h3 class="text-sm font-bold text-white font-mono uppercase tracking-wider flex items-center gap-2">
+          <span>Historial de Consultas & Exámenes</span>
+          <span id="recordsCounter" class="text-xs px-2 py-0.5 rounded-full bg-cyber-cardLight border border-cyber-border text-cyber-cyan font-normal">0</span>
+        </h3>
+        <span id="activeFilterBadge" class="hidden text-[11px] font-mono text-cyber-amber bg-cyber-amber/10 px-2.5 py-0.5 rounded border border-cyber-amber/30">
+          Filtro Activo
+        </span>
+      </div>
+
+      <div id="recordsContainer" class="space-y-4">
+        <!-- Renderizado dinámicamente -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: EDITAR FICHA VITAL -->
+  <div id="vitalModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-cyber-card border border-cyber-cyan/40 rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-cyber-border">
+        <h3 class="font-mono font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-cyber-cyan"></span>
+          Editar Ficha Vital del Paciente
+        </h3>
+        <button onclick="closeVitalModal()" class="text-cyber-muted hover:text-white font-mono">&times;</button>
+      </div>
+
+      <form id="vitalForm" onsubmit="saveVitalData(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-mono text-cyber-muted mb-1">Nombre Completo del Paciente</label>
+          <input type="text" id="inputVitalName" required class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Estado del Expediente</label>
+            <select id="inputVitalStatus" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+              <option value="Activo">Activo</option>
+              <option value="En Monitoreo">En Monitoreo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Tipo de Sangre</label>
+            <input type="text" id="inputVitalBlood" placeholder="Ej: O Rhesus (+)" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">DUI / Documento ID</label>
+            <input type="text" id="inputVitalDoc" placeholder="00000000-0" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Seguro Médico / Poliza</label>
+            <input type="text" id="inputVitalInsurance" placeholder="ISSS / Privado" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-mono text-cyber-muted mb-1">Alergias Conocidas</label>
+          <input type="text" id="inputVitalAllergies" placeholder="Penicilina, Polvo, etc." class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+        </div>
+
+        <div>
+          <label class="block font-mono text-cyber-muted mb-1">Condiciones Crónicas</label>
+          <input type="text" id="inputVitalConditions" placeholder="Hipertensión, Artritis, etc." class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Contacto de Emergencia</label>
+            <input type="text" id="inputVitalContact" placeholder="Nombre & Teléfono" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Doctor Cabecera Principal</label>
+            <input type="text" id="inputVitalDoctor" placeholder="Dr. Nombre Apellido" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-cyber-border">
+          <button type="button" onclick="closeVitalModal()" class="px-4 py-2 bg-cyber-cardLight text-cyber-muted rounded hover:text-white font-mono">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-cyber-cyan text-black font-semibold rounded hover:bg-cyan-300 font-mono">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR / EDITAR CONSULTA O EXAMEN -->
+  <div id="recordModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-cyber-card border border-cyber-cyan/40 rounded-xl max-w-2xl w-full p-6 space-y-4 my-8 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-cyber-border">
+        <h3 id="recordModalTitle" class="font-mono font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-cyber-cyan"></span>
+          Nueva Consulta / Examen Médico
+        </h3>
+        <button onclick="closeRecordModal()" class="text-cyber-muted hover:text-white font-mono text-lg">&times;</button>
+      </div>
+
+      <form id="recordForm" onsubmit="saveRecord(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="recordId">
+
+        <!-- Fila 1: Fecha Cita, Especialidad, Doctor -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Fecha de Visita / Examen *</label>
+            <input type="date" id="recordDate" required class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Especialidad Médica *</label>
+            <input type="text" id="recordSpecialty" required placeholder="Ej: Cardiología, Laboratorio..." class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Doctor / Médico Tratante</label>
+            <input type="text" id="recordDoctor" placeholder="Dr. Nombre Apellido" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+        </div>
+
+        <!-- Fila 2: Lugar / Clínica y Próxima Cita -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Lugar / Centro Médico *</label>
+            <input type="text" id="recordLocation" required placeholder="Ej: Policlínico Zacamil, Hospital Bloom..." class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+          <div>
+            <label class="block font-mono text-cyber-muted mb-1">Próxima Cita Programada (Opcional)</label>
+            <input type="date" id="recordNextDate" class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+          </div>
+        </div>
+
+        <!-- Fila 3: Diagnóstico -->
+        <div>
+          <label class="block font-mono text-cyber-muted mb-1">Motivo / Diagnóstico / Resumen *</label>
+          <textarea id="recordDiagnosis" rows="3" required placeholder="Detalles de la evaluación médica o resultados del examen..." class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none"></textarea>
+        </div>
+
+        <!-- Fila 4: Indicaciones / Medicamentos -->
+        <div>
+          <label class="block font-mono text-cyber-muted mb-1">Indicaciones & Tratamiento (Separar por comas)</label>
+          <input type="text" id="recordTreatment" placeholder="Ej: Enalapril 10mg cada 12h, Dieta baja en sal..." class="w-full bg-cyber-cardLight border border-cyber-border rounded px-3 py-2 text-white font-mono focus:border-cyber-cyan outline-none">
+        </div>
+
+        <!-- Fila 5: MÚLTIPLES NOTAS DE VOZ -->
+        <div class="p-3 bg-cyber-cardLight/60 border border-cyber-border rounded-lg space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-mono font-semibold text-cyber-cyan flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+              Audios y Notas de Voz del Médico
+            </span>
+            <span id="audioCountBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-border text-cyber-muted">0 Audios</span>
+          </div>
+
+          <!-- Grabador en tiempo real -->
+          <div class="flex items-center gap-2 bg-cyber-card p-2 rounded border border-cyber-border">
+            <button type="button" id="recordAudioBtn" onclick="toggleAudioRecording()" class="px-3 py-1.5 bg-cyber-rose/20 text-cyber-rose hover:bg-cyber-rose/30 border border-cyber-rose/50 rounded flex items-center gap-1 font-mono text-xs transition">
+              <span id="recordAudioDot" class="w-2 h-2 rounded-full bg-cyber-rose"></span>
+              <span id="recordAudioLabel">Grabar Micrófono</span>
+            </button>
+            <span id="recordingTimer" class="hidden font-mono text-cyber-rose text-xs animate-pulse">00:00</span>
+            
+            <span class="text-cyber-muted text-xs font-mono">o sube archivo:</span>
+            <input type="file" id="audioFileInput" accept="audio/*" multiple onchange="handleAudioUpload(event)" class="text-[11px] text-cyber-muted font-mono file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-cyber-cardLight file:text-cyber-cyan">
+          </div>
+
+          <!-- Lista de audios adjuntados al formulario -->
+          <div id="modalAudioList" class="space-y-2">
+            <!-- Audios insertados dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Fila 6: Adjuntos de Imágenes -->
+        <div>
+          <label class="block font-mono text-cyber-muted mb-1">Fotos / Imágenes de Recetas y Exámenes</label>
+          <input type="file" id="imageFileInput" accept="image/*" multiple onchange="handleImageUpload(event)" class="w-full text-xs text-cyber-muted font-mono file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:bg-cyber-cardLight file:text-cyber-cyan">
+          <div id="modalImageList" class="flex flex-wrap gap-2 mt-2"></div>
+        </div>
+
+        <!-- Botones Modal -->
+        <div class="flex justify-end gap-2 pt-3 border-t border-cyber-border">
+          <button type="button" onclick="closeRecordModal()" class="px-4 py-2 bg-cyber-cardLight text-cyber-muted rounded hover:text-white font-mono">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-cyber-cyan text-black font-semibold rounded hover:bg-cyan-300 font-mono">Guardar Expediente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX DE IMÁGENES -->
+  <div id="lightbox" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="Vista Previa" class="max-w-full max-h-full rounded-lg border border-cyber-cyan/50 shadow-2xl">
+  </div>
+
+  <!-- JAVASCRIPT PRINCIPAL -->
+  <script>
+    /* ==========================================================================
+       GESTIÓN DE BASE DE DATOS LOCAL (INDEXEDDB)
+       ========================================================================== */
+    const DB_NAME = 'ExpedientesMamaIrmaDB';
+    const DB_VERSION = 1;
+    let db = null;
+
+    // Estado Temporal de Edición
+    let tempAudioList = []; // [{ id, title, blobUrl, base64 }]
+    let tempImageList = []; // [{ id, base64 }]
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordingStartTime = 0;
+    let recordingTimerInterval = null;
+
+    // Inicializar IndexedDB
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = (e) => {
+          const dbInstance = e.target.result;
+          if (!dbInstance.objectStoreNames.contains('vitals')) {
+            dbInstance.createObjectStore('vitals', { keyPath: 'id' });
+          }
+          if (!dbInstance.objectStoreNames.contains('records')) {
+            dbInstance.createObjectStore('records', { keyPath: 'id' });
+          }
+        };
+
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve(db);
+        };
+
+        request.onerror = (e) => reject('Error abriendo IndexedDB: ' + e.target.error);
+      });
+    }
+
+    // Promesas auxiliares para IndexedDB
+    function getFromDB(storeName, key) {
+      return new Promise((resolve) => {
+        const transaction = db.transaction(storeName, 'readonly');
+        const store = transaction.objectStore(storeName);
+        const req = store.get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    function getAllFromDB(storeName) {
+      return new Promise((resolve) => {
+        const transaction = db.transaction(storeName, 'readonly');
+        const store = transaction.objectStore(storeName);
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      });
+    }
+
+    function saveToDB(storeName, item) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(storeName, 'readwrite');
+        const store = transaction.objectStore(storeName);
+        const req = store.put(item);
+        req.onsuccess = () => resolve(true);
+        req.onerror = (e) => reject(e);
+      });
+    }
+
+    function deleteFromDB(storeName, key) {
+      return new Promise((resolve) => {
+        const transaction = db.transaction(storeName, 'readwrite');
+        const store = transaction.objectStore(storeName);
+        const req = store.delete(key);
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => resolve(false);
+      });
+    }
+
+    /* ==========================================================================
+       INICIALIZACIÓN DE LA APLICACIÓN (EN BLANCO POR DEFECTO)
+       ========================================================================== */
+    let currentCalendarDate = new Date();
+    let selectedCalendarFilterDate = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await initDB();
+      await loadVitalData();
+      await renderCalendar();
+      await renderRecords();
+    });
+
+    /* ==========================================================================
+       GESTIÓN DE FICHA VITAL
+       ========================================================================== */
+    async function loadVitalData() {
+      const vital = await getFromDB('vitals', 'main_vital');
+      
+      if (vital) {
+        document.getElementById('vitalName').textContent = vital.name || 'Paciente Sin Nombre';
+        document.getElementById('vitalStatus').textContent = vital.status || 'Activo';
+        document.getElementById('vitalDocInsurance').textContent = `DUI/ID: ${vital.doc || '---'} | Seguro: ${vital.insurance || '---'}`;
+        document.getElementById('vitalBlood').textContent = vital.blood || '--';
+        document.getElementById('vitalAllergies').textContent = vital.allergies || '--';
+        document.getElementById('vitalConditions').textContent = vital.conditions || '--';
+        document.getElementById('vitalContactDoctor').textContent = `${vital.contact || '--'} / ${vital.doctor || '--'}`;
+      } else {
+        // En blanco inicial
+        document.getElementById('vitalName').textContent = 'Mamá Irma (Registrar Ficha)';
+        document.getElementById('vitalStatus').textContent = 'Sin Datos';
+        document.getElementById('vitalDocInsurance').textContent = 'DUI/ID: --- | Seguro: ---';
+        document.getElementById('vitalBlood').textContent = '--';
+        document.getElementById('vitalAllergies').textContent = '--';
+        document.getElementById('vitalConditions').textContent = '--';
+        document.getElementById('vitalContactDoctor').textContent = '--';
+      }
+    }
+
+    function openVitalModal() {
+      getFromDB('vitals', 'main_vital').then(vital => {
+        document.getElementById('inputVitalName').value = vital?.name || '';
+        document.getElementById('inputVitalStatus').value = vital?.status || 'Activo';
+        document.getElementById('inputVitalBlood').value = vital?.blood || '';
+        document.getElementById('inputVitalDoc').value = vital?.doc || '';
+        document.getElementById('inputVitalInsurance').value = vital?.insurance || '';
+        document.getElementById('inputVitalAllergies').value = vital?.allergies || '';
+        document.getElementById('inputVitalConditions').value = vital?.conditions || '';
+        document.getElementById('inputVitalContact').value = vital?.contact || '';
+        document.getElementById('inputVitalDoctor').value = vital?.doctor || '';
+
+        document.getElementById('vitalModal').classList.remove('hidden');
+      });
+    }
+
+    function closeVitalModal() {
+      document.getElementById('vitalModal').classList.add('hidden');
+    }
+
+    async function saveVitalData(e) {
+      e.preventDefault();
+      const vitalObj = {
+        id: 'main_vital',
+        name: document.getElementById('inputVitalName').value,
+        status: document.getElementById('inputVitalStatus').value,
+        blood: document.getElementById('inputVitalBlood').value,
+        doc: document.getElementById('inputVitalDoc').value,
+        insurance: document.getElementById('inputVitalInsurance').value,
+        allergies: document.getElementById('inputVitalAllergies').value,
+        conditions: document.getElementById('inputVitalConditions').value,
+        contact: document.getElementById('inputVitalContact').value,
+        doctor: document.getElementById('inputVitalDoctor').value
+      };
+
+      await saveToDB('vitals', vitalObj);
+      closeVitalModal();
+      await loadVitalData();
+    }
+
+    /* ==========================================================================
+       CALENDARIO Y AGENDA DE CITAS
+       ========================================================================== */
+    async function renderCalendar() {
+      const records = await getAllFromDB('records');
+      
+      const year = currentCalendarDate.getFullYear();
+      const month = currentCalendarDate.getMonth();
+
+      const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      document.getElementById('calendarMonthLabel').textContent = `${monthNames[month]} ${year}`;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const grid = document.getElementById('calendarDaysGrid');
+      grid.innerHTML = '';
+
+      // Días vacíos previos
+      for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'h-9 border border-transparent';
+        grid.appendChild(emptyCell);
+      }
+
+      // Días del mes
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateFormatted = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        
+        // Verificar si hay registros o próximas citas este día
+        const visitsToday = records.filter(r => r.date === dateFormatted);
+        const nextAppointmentsToday = records.filter(r => r.nextDate === dateFormatted);
+
+        const isToday = todayStr === dateFormatted;
+        const isSelected = selectedCalendarFilterDate === dateFormatted;
+
+        const dayCell = document.createElement('button');
+        dayCell.type = 'button';
+        dayCell.onclick = () => filterByCalendarDate(dateFormatted);
+
+        let cellClasses = 'h-9 rounded flex flex-col items-center justify-between py-1 transition relative border border-cyber-border/40 ';
+        if (isSelected) {
+          cellClasses += 'bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan font-bold ';
+        } else if (isToday) {
+          cellClasses += 'bg-cyber-cardLight text-white border-cyber-cyan/50 font-bold ';
+        } else {
+          cellClasses += 'bg-cyber-cardLight/30 text-cyber-text hover:bg-cyber-cardLight ';
+        }
+
+        dayCell.className = cellClasses;
+
+        // Número del día
+        const dayNumSpan = document.createElement('span');
+        dayNumSpan.textContent = day;
+        dayCell.appendChild(dayNumSpan);
+
+        // Indicadores (puntos cyan/amber)
+        const dotsContainer = document.createElement('div');
+        dotsContainer.className = 'flex items-center gap-1';
+
+        if (visitsToday.length > 0) {
+          const dot = document.createElement('span');
+          dot.className = 'w-1.5 h-1.5 rounded-full bg-cyber-cyan';
+          dotsContainer.appendChild(dot);
+        }
+        if (nextAppointmentsToday.length > 0) {
+          const dot = document.createElement('span');
+          dot.className = 'w-1.5 h-1.5 rounded-full bg-cyber-amber animate-pulse';
+          dotsContainer.appendChild(dot);
+        }
+
+        dayCell.appendChild(dotsContainer);
+        grid.appendChild(dayCell);
+      }
+
+      renderUpcomingAppointments(records);
+    }
+
+    function changeMonth(delta) {
+      currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+      renderCalendar();
+    }
+
+    function resetMonth() {
+      currentCalendarDate = new Date();
+      selectedCalendarFilterDate = null;
+      renderCalendar();
+      applyFilters();
+    }
+
+    function filterByCalendarDate(dateStr) {
+      if (selectedCalendarFilterDate === dateStr) {
+        selectedCalendarFilterDate = null; // deseleccionar
+      } else {
+        selectedCalendarFilterDate = dateStr;
+      }
+      renderCalendar();
+      applyFilters();
+    }
+
+    function renderUpcomingAppointments(records) {
+      const container = document.getElementById('upcomingAppointmentsList');
+      container.innerHTML = '';
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const upcoming = records
+        .filter(r => r.nextDate && r.nextDate >= todayStr)
+        .sort((a, b) => a.nextDate.localeCompare(b.nextDate));
+
+      document.getElementById('upcomingCount').textContent = `${upcoming.length} Pendientes`;
+
+      if (upcoming.length === 0) {
+        container.innerHTML = `<p class="text-xs text-cyber-muted italic font-mono text-center py-4">No hay próximas citas agendadas.</p>`;
+        return;
+      }
+
+      upcoming.forEach(app => {
+        const item = document.createElement('div');
+        item.className = 'p-2 rounded bg-cyber-cardLight/60 border border-cyber-border flex items-center justify-between text-xs font-mono';
+        item.innerHTML = `
+          <div>
+            <div class="font-semibold text-cyber-amber">${app.nextDate}</div>
+            <div class="text-white truncate max-w-[140px]">${app.specialty}</div>
+            <div class="text-[10px] text-cyber-muted truncate max-w-[140px]">${app.location}</div>
+          </div>
+          <button onclick="editRecord('${app.id}')" class="text-cyber-cyan hover:underline text-[11px]">Ver</button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    /* ==========================================================================
+       GESTIÓN DE REGISTROS / CONSULTAS MÉDICAS (CRUD)
+       ========================================================================== */
+    async function renderRecords() {
+      const records = await getAllFromDB('records');
+      populateFilterSelects(records);
+      applyFiltersWithData(records);
+    }
+
+    function populateFilterSelects(records) {
+      const specSelect = document.getElementById('specialtyFilter');
+      const locSelect = document.getElementById('locationFilter');
+
+      const currentSpec = specSelect.value;
+      const currentLoc = locSelect.value;
+
+      const specialties = [...new Set(records.map(r => r.specialty).filter(Boolean))];
+      const locations = [...new Set(records.map(r => r.location).filter(Boolean))];
+
+      specSelect.innerHTML = '<option value="">Todas las Especialidades</option>';
+      specialties.forEach(s => {
+        specSelect.innerHTML += `<option value="${s}" ${s === currentSpec ? 'selected' : ''}>${s}</option>`;
+      });
+
+      locSelect.innerHTML = '<option value="">Todos los Lugares</option>';
+      locations.forEach(l => {
+        locSelect.innerHTML += `<option value="${l}" ${l === currentLoc ? 'selected' : ''}>${l}</option>`;
+      });
+    }
+
+    async function applyFilters() {
+      const records = await getAllFromDB('records');
+      applyFiltersWithData(records);
+    }
+
+    function applyFiltersWithData(records) {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      const specVal = document.getElementById('specialtyFilter').value;
+      const locVal = document.getElementById('locationFilter').value;
+
+      let filtered = records;
+
+      if (selectedCalendarFilterDate) {
+        filtered = filtered.filter(r => r.date === selectedCalendarFilterDate || r.nextDate === selectedCalendarFilterDate);
+      }
+      if (specVal) {
+        filtered = filtered.filter(r => r.specialty === specVal);
+      }
+      if (locVal) {
+        filtered = filtered.filter(r => r.location === locVal);
+      }
+      if (searchVal) {
+        filtered = filtered.filter(r => 
+          (r.specialty && r.specialty.toLowerCase().includes(searchVal)) ||
+          (r.doctor && r.doctor.toLowerCase().includes(searchVal)) ||
+          (r.location && r.location.toLowerCase().includes(searchVal)) ||
+          (r.diagnosis && r.diagnosis.toLowerCase().includes(searchVal)) ||
+          (r.treatment && r.treatment.toLowerCase().includes(searchVal))
+        );
+      }
+
+      // Ordenar por fecha descendente
+      filtered.sort((a, b) => b.date.localeCompare(a.date));
+
+      // Actualizar contadores
+      document.getElementById('recordsCounter').textContent = filtered.length;
+      
+      const isFiltered = searchVal || specVal || locVal || selectedCalendarFilterDate;
+      document.getElementById('activeFilterBadge').classList.toggle('hidden', !isFiltered);
+
+      const container = document.getElementById('recordsContainer');
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-cyber-card border border-cyber-border rounded-xl p-6 space-y-2">
+            <svg class="w-12 h-12 text-cyber-muted mx-auto opacity-40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <p class="text-sm text-cyber-muted font-mono">No hay expedientes ni consultas encontradas.</p>
+            <p class="text-xs text-cyber-muted">Usa el botón "Nueva Consulta / Examen" para registrar la información de tu abuela.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(record => {
+        container.appendChild(createRecordCard(record));
+      });
+    }
+
+    function clearFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('specialtyFilter').value = '';
+      document.getElementById('locationFilter').value = '';
+      selectedCalendarFilterDate = null;
+      renderCalendar();
+      applyFilters();
+    }
+
+    // Renderizar tarjeta individual de expediente
+    function createRecordCard(record) {
+      const card = document.createElement('article');
+      card.className = 'card-print bg-cyber-card border border-cyber-border hover:border-cyber-cyan/40 rounded-xl p-5 transition space-y-4 glow-cyan-hover relative';
+
+      // Tratamientos / Indicaciones en Badges
+      const treatmentBadges = record.treatment
+        ? record.treatment.split(',').map(t => `<span class="px-2 py-0.5 rounded bg-cyber-cardLight border border-cyber-border text-cyber-cyan font-mono text-[11px]">${t.trim()}</span>`).join(' ')
+        : '<span class="text-cyber-muted text-xs font-mono">Sin indicaciones específicas</span>';
+
+      // Audios Lista
+      let audiosHTML = '';
+      if (record.audios && record.audios.length > 0) {
+        audiosHTML = `
+          <div class="space-y-2 pt-2 border-t border-cyber-border/50">
+            <span class="text-[11px] font-mono text-cyber-cyan flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+              Audios de Indicaciones Médicas (${record.audios.length})
+            </span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${record.audios.map((a, idx) => `
+                <div class="bg-cyber-cardLight/80 p-2 rounded border border-cyber-border space-y-1">
+                  <div class="text-[10px] font-mono text-cyber-muted truncate">${a.title || `Audio ${idx + 1}`}</div>
+                  <audio controls src="${a.base64}" class="w-full h-8 text-xs"></audio>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Imágenes Lista
+      let imagesHTML = '';
+      if (record.images && record.images.length > 0) {
+        imagesHTML = `
+          <div class="space-y-2 pt-2 border-t border-cyber-border/50">
+            <span class="text-[11px] font-mono text-cyber-muted">Adjuntos de Recetas y Resultados (${record.images.length})</span>
+            <div class="flex flex-wrap gap-2">
+              ${record.images.map(img => `
+                <img src="${img.base64}" onclick="openLightbox('${img.base64}')" alt="Examen" class="w-16 h-16 object-cover rounded border border-cyber-border hover:border-cyber-cyan cursor-pointer transition">
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-cyber-border/60">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-md bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan font-mono font-bold text-xs">
+              ${record.specialty}
+            </span>
+            <span class="px-2.5 py-1 rounded-md bg-cyber-cardLight border border-cyber-border text-white font-mono text-xs flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 text-cyber-emerald" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              ${record.location}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-3 font-mono text-xs">
+            <span class="text-cyber-muted">${record.date}</span>
+            <div class="no-print flex items-center gap-1">
+              <button onclick="editRecord('${record.id}')" class="p-1 hover:text-cyber-cyan text-cyber-muted transition" title="Editar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+              <button onclick="deleteRecord('${record.id}')" class="p-1 hover:text-cyber-rose text-cyber-muted transition" title="Eliminar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="md:col-span-2 space-y-2">
+            <div>
+              <span class="text-[10px] font-mono text-cyber-muted uppercase block">Doctor / Médico Tratante</span>
+              <span class="text-white font-semibold">${record.doctor || 'No especificado'}</span>
+            </div>
+            <div>
+              <span class="text-[10px] font-mono text-cyber-muted uppercase block">Motivo / Diagnóstico</span>
+              <p class="text-cyber-text leading-relaxed mt-0.5">${record.diagnosis}</p>
+            </div>
+          </div>
+
+          <div class="space-y-2 bg-cyber-cardLight/30 p-3 rounded-lg border border-cyber-border/40">
+            <div>
+              <span class="text-[10px] font-mono text-cyber-muted uppercase block">Indicaciones / Tratamiento</span>
+              <div class="flex flex-wrap gap-1 mt-1">${treatmentBadges}</div>
+            </div>
+            ${record.nextDate ? `
+              <div class="pt-2 border-t border-cyber-border/40">
+                <span class="text-[10px] font-mono text-cyber-amber uppercase block">Próxima Cita</span>
+                <span class="font-mono text-cyber-amber font-semibold">${record.nextDate}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        ${audiosHTML}
+        ${imagesHTML}
+      `;
+
+      return card;
+    }
+
+    /* ==========================================================================
+       MODAL DE REGISTRO / EDICIÓN & MULTIAUDIOS
+       ========================================================================== */
+    function openRecordModal(recordToEdit = null) {
+      tempAudioList = [];
+      tempImageList = [];
+
+      const form = document.getElementById('recordForm');
+      form.reset();
+
+      if (recordToEdit) {
+        document.getElementById('recordModalTitle').textContent = 'Editar Expediente Médico';
+        document.getElementById('recordId').value = recordToEdit.id;
+        document.getElementById('recordDate').value = recordToEdit.date;
+        document.getElementById('recordSpecialty').value = recordToEdit.specialty;
+        document.getElementById('recordDoctor').value = recordToEdit.doctor || '';
+        document.getElementById('recordLocation').value = recordToEdit.location;
+        document.getElementById('recordNextDate').value = recordToEdit.nextDate || '';
+        document.getElementById('recordDiagnosis').value = recordToEdit.diagnosis;
+        document.getElementById('recordTreatment').value = recordToEdit.treatment || '';
+
+        if (recordToEdit.audios) tempAudioList = [...recordToEdit.audios];
+        if (recordToEdit.images) tempImageList = [...recordToEdit.images];
+      } else {
+        document.getElementById('recordModalTitle').textContent = 'Nueva Consulta / Examen Médico';
+        document.getElementById('recordId').value = '';
+        document.getElementById('recordDate').value = new Date().toISOString().split('T')[0];
+      }
+
+      renderModalAudioList();
+      renderModalImageList();
+      document.getElementById('recordModal').classList.remove('hidden');
+    }
+
+    function closeRecordModal() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+      document.getElementById('recordModal').classList.add('hidden');
+    }
+
+    async function editRecord(id) {
+      const record = await getFromDB('records', id);
+      if (record) openRecordModal(record);
+    }
+
+    async function deleteRecord(id) {
+      if (confirm('¿Estás seguro de eliminar este registro de consulta?')) {
+        await deleteFromDB('records', id);
+        await renderCalendar();
+        await renderRecords();
+      }
+    }
+
+    async function saveRecord(e) {
+      e.preventDefault();
+
+      const recordId = document.getElementById('recordId').value || 'rec_' + Date.now();
+      const recordObj = {
+        id: recordId,
+        date: document.getElementById('recordDate').value,
+        specialty: document.getElementById('recordSpecialty').value,
+        doctor: document.getElementById('recordDoctor').value,
+        location: document.getElementById('recordLocation').value,
+        nextDate: document.getElementById('recordNextDate').value,
+        diagnosis: document.getElementById('recordDiagnosis').value,
+        treatment: document.getElementById('recordTreatment').value,
+        audios: tempAudioList,
+        images: tempImageList,
+        updatedAt: new Date().toISOString()
+      };
+
+      await saveToDB('records', recordObj);
+      closeRecordModal();
+      await renderCalendar();
+      await renderRecords();
+    }
+
+    /* ==========================================================================
+       GRABACIÓN Y ARCHIVOS MULTI-AUDIO
+       ========================================================================== */
+    async function toggleAudioRecording() {
+      const btnLabel = document.getElementById('recordAudioLabel');
+      const timerSpan = document.getElementById('recordingTimer');
+
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        btnLabel.textContent = 'Grabar Micrófono';
+        timerSpan.classList.add('hidden');
+        clearInterval(recordingTimerInterval);
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const base64 = await blobToBase64(audioBlob);
+          const audioItem = {
+            id: 'aud_' + Date.now(),
+            title: `Nota de Voz (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
+            base64: base64
+          };
+          tempAudioList.push(audioItem);
+          renderModalAudioList();
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+        btnLabel.textContent = 'Detener Grabación';
+        timerSpan.classList.remove('hidden');
+        recordingStartTime = Date.now();
+        
+        recordingTimerInterval = setInterval(() => {
+          const diff = Math.floor((Date.now() - recordingStartTime) / 1000);
+          const m = String(Math.floor(diff / 60)).padStart(2, '0');
+          const s = String(diff % 60).padStart(2, '0');
+          timerSpan.textContent = `${m}:${s}`;
+        }, 1000);
+
+      } catch (err) {
+        alert('No se pudo acceder al micrófono: ' + err.message);
+      }
+    }
+
+    async function handleAudioUpload(e) {
+      const files = Array.from(e.target.files);
+      for (const file of files) {
+        const base64 = await fileToBase64(file);
+        tempAudioList.push({
+          id: 'aud_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          title: file.name,
+          base64: base64
+        });
+      }
+      renderModalAudioList();
+      e.target.value = '';
+    }
+
+    function renderModalAudioList() {
+      const container = document.getElementById('modalAudioList');
+      const badge = document.getElementById('audioCountBadge');
+      container.innerHTML = '';
+      badge.textContent = `${tempAudioList.length} Audios`;
+
+      tempAudioList.forEach((aud, index) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between gap-2 bg-cyber-card p-2 rounded border border-cyber-border text-xs';
+        div.innerHTML = `
+          <div class="flex-1 truncate font-mono text-white">${aud.title}</div>
+          <audio controls src="${aud.base64}" class="h-6 w-36"></audio>
+          <button type="button" onclick="removeTempAudio(${index})" class="text-cyber-rose hover:underline font-mono text-[11px]">Quitar</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removeTempAudio(index) {
+      tempAudioList.splice(index, 1);
+      renderModalAudioList();
+    }
+
+    /* ==========================================================================
+       GESTIÓN DE IMÁGENES
+       ========================================================================== */
+    async function handleImageUpload(e) {
+      const files = Array.from(e.target.files);
+      for (const file of files) {
+        const base64 = await fileToBase64(file);
+        tempImageList.push({
+          id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          base64: base64
+        });
+      }
+      renderModalImageList();
+      e.target.value = '';
+    }
+
+    function renderModalImageList() {
+      const container = document.getElementById('modalImageList');
+      container.innerHTML = '';
+
+      tempImageList.forEach((img, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'relative group w-14 h-14';
+        wrapper.innerHTML = `
+          <img src="${img.base64}" class="w-full h-full object-cover rounded border border-cyber-border">
+          <button type="button" onclick="removeTempImage(${index})" class="absolute -top-1 -right-1 bg-cyber-rose text-black rounded-full w-4 h-4 text-[10px] flex items-center justify-center font-bold">
+            &times;
+          </button>
+        `;
+        container.appendChild(wrapper);
+      });
+    }
+
+    function removeTempImage(index) {
+      tempImageList.splice(index, 1);
+      renderModalImageList();
+    }
+
+    function openLightbox(src) {
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightbox').classList.remove('hidden');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.add('hidden');
+    }
+
+    /* ==========================================================================
+       UTILIDADES & CONVERSIÓN ARCHIVOS
+       ========================================================================== */
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    /* ==========================================================================
+       RESPALDO Y SINCRONIZACIÓN JSON
+       ========================================================================== */
+    async function exportDataJSON() {
+      const vital = await getFromDB('vitals', 'main_vital');
+      const records = await getAllFromDB('records');
+
+      const backupData = {
+        app: 'Expedientes Mamá Irma by DD',
+        exportedAt: new Date().toISOString(),
+        vital: vital || {},
+        records: records || []
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `Expedientes_Mama_Irma_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    async function importDataJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (imported.vital) {
+            await saveToDB('vitals', imported.vital);
+          }
+          if (imported.records && Array.isArray(imported.records)) {
+            for (const r of imported.records) {
+              await saveToDB('records', r);
+            }
+          }
+          alert('¡Sincronización y restauración completada con éxito!');
+          await loadVitalData();
+          await renderCalendar();
+          await renderRecords();
+        } catch (err) {
+          alert('Error al leer el archivo JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
